@@ -1,26 +1,109 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-ice: #dbe8ff;
+  --color-night: #0a1129;
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #0a1129;
+  color: #e8f0ff;
+  font-family: var(--font-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+::selection {
+  background: rgb(150 200 255 / 0.35);
+}
+
+/* ---------- inputs ---------- */
+.field {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 1rem;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  background: rgb(255 255 255 / 0.06);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 8px 30px -12px rgb(0 0 0 / 0.5);
+  backdrop-filter: blur(10px);
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  cursor: text;
+}
+.field:hover {
+  border-color: rgb(255 255 255 / 0.25);
+}
+.field:focus-within {
+  border-color: rgb(150 205 255 / 0.7);
+  background: rgb(255 255 255 / 0.09);
+  box-shadow: 0 0 0 4px rgb(125 200 255 / 0.15), 0 0 40px rgb(125 200 255 / 0.25);
+}
+.field input::placeholder {
+  color: rgb(255 255 255 / 0.3);
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.55;
+  cursor: pointer;
+}
+
+/* ---------- sky ---------- */
+.star {
+  opacity: 0.6;
+  animation: twinkle 4s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+.warm-glow {
+  animation: warm 2.4s ease-in-out infinite alternate;
+}
+@keyframes warm {
+  from { filter: brightness(0.9); }
+  to { filter: brightness(1.15); }
+}
+
+/* ---------- frost ---------- */
+.frost {
+  --frost: 1;
+  --rx: 72%;
+  --ry: 76%;
+  --clear: calc(30% + (1 - var(--frost)) * 72%);
+  --edge: calc(var(--clear) + 34%);
+}
+@media (max-width: 640px) {
+  .frost {
+    --rx: 110%;
+    --ry: 72%;
   }
 }
+.frost-mask {
+  -webkit-mask-image: radial-gradient(ellipse var(--rx) var(--ry) at 50% 45%, transparent var(--clear), #000 var(--edge));
+  mask-image: radial-gradient(ellipse var(--rx) var(--ry) at 50% 45%, transparent var(--clear), #000 var(--edge));
+}
+.frost-glass {
+  -webkit-backdrop-filter: blur(calc(var(--frost) * 6px)) saturate(1.15);
+  backdrop-filter: blur(calc(var(--frost) * 6px)) saturate(1.15);
+  background: rgb(205 225 255 / calc(var(--frost) * 0.12));
+  box-shadow: inset 0 0 calc(var(--frost) * 160px) rgb(225 238 255 / calc(var(--frost) * 0.4));
+}
+.frost-crystals {
+  opacity: calc(0.1 + var(--frost) * 0.9);
+}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.drip {
+  position: absolute;
+  width: 6px;
+  height: 9px;
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  background: linear-gradient(#f2f8ff, #9fc7f5);
+  box-shadow: 0 0 6px rgb(180 215 255 / 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star, .warm-glow { animation: none; }
 }
